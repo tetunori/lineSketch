@@ -62,6 +62,7 @@ const onImageDropped = ( file ) => {
     loadImage( file.data, ( img ) => {
 
       gImg = img;
+      shrinkBigImage();
       drawLineSketch();
 
     } );
@@ -70,6 +71,25 @@ const onImageDropped = ( file ) => {
     console.log( 'Non-supported file type. Please specify jpg or png' );
   }
   
+}
+
+// Shrink big image
+const shrinkBigImage = () => {
+
+  console.log( gImg.width, gImg.height );
+
+  const maxLength = Math.max( gImg.width, gImg.height );
+  const threashold = 1570;
+
+  if( maxLength > threashold ){
+
+    const ratio = maxLength / threashold;
+    gImg.resize( gImg.width / ratio, gImg.height / ratio );
+
+  }
+
+  console.log( gImg.width, gImg.height );
+
 }
 
 // Draw waiting-drop canvas 
