@@ -1,6 +1,6 @@
 
 // Image object
-let gImg;
+let gImg = undefined;
 
 // Cell unit size(pixel)
 const CELL_SIZE = 10;
@@ -8,18 +8,63 @@ const CELL_SIZE = 10;
 // Line level ranges from 0 to 4.
 const LINE_LEVEL_MAX = 4;
 
-function preload() {
-  gImg = loadImage( 'images/testPict01.png' );
-}
-
 function setup() {
-  drawLineSketch();
+
+  // Prepare canvas
+  const canvas = createCanvas( 800, 800 )
+    .dragOver( ( evt ) => {
+      this.background( color( 'black' ) );
+      evt.preventDefault;
+    } )
+    .dragLeave( () => {
+      if( gImg === undefined ){
+          drawDropCanvas();
+      }else{
+        drawLineSketch();
+      }
+    } );
+
+  // drow illustration.
+  drawDropCanvas();
+
+  // Prepare drag&drop.
+  canvas.drop( onImageDropped );
+
 }
 
+// Callback for image dropped.
+const onImageDropped = ( file ) => {
+
+  if( file.type === 'image' ){
+
+    loadImage( file.data, ( img ) => {
+
+      gImg = img;
+      drawLineSketch();
+
+    } );
+    
+  }else{
+    console.log( 'Non-supported file type. Please specify jpg or png' );
+  }
+  
+}
+
+// Draw waiting-drop canvas 
+const drawDropCanvas = () => {
+
+  background( 200 );
+  textAlign( CENTER );
+  textSize( 26 );
+  text( 'Drop image. Up to 1440*1440 pixels.', width / 2, height / 2 );
+
+}
+
+// Draw whole line sketch. Main procedure.
 const drawLineSketch = () => {
 
   // Create canvas with image size
-  createCanvas( gImg.width, gImg.height );
+  resizeCanvas( gImg.width, gImg.height );
 
   // Draw grid first
   drawGrid();
