@@ -1,6 +1,8 @@
 
 // Image object
 let gImg = undefined;
+let gToggleGrid = true;
+let gToggleQuarterLine = true;
 
 // Cell unit size(pixel)
 const CELL_SIZE = 10;
@@ -14,7 +16,6 @@ function setup() {
   const canvas = createCanvas( 800, 800 )
     .dragOver( ( evt ) => {
       this.background( color( 'black' ) );
-      evt.preventDefault;
     } )
     .dragLeave( () => {
       if( gImg === undefined ){
@@ -62,6 +63,10 @@ const drawDropCanvas = () => {
 
 // Draw whole line sketch. Main procedure.
 const drawLineSketch = () => {
+
+  if( gImg === undefined ){
+    return;
+  }
 
   // Create canvas with image size
   resizeCanvas( gImg.width, gImg.height );
@@ -130,7 +135,11 @@ const drawLines = () => {
 // Draw base grid.
 const drawGrid = () => {
 
-  stroke( "#BAAFA7" );
+  if( gToggleGrid === false ){
+    return;
+  }
+
+  stroke( '#BAAFA7' );
   strokeWeight( 1.0 );
 
   for( let column = 0; column < height; column += CELL_SIZE ){
@@ -147,6 +156,10 @@ const drawGrid = () => {
 
 // Draw thick vertical/horizontal lines dividing the canvas into 16 regions.
 const drawQuarterLine = () => {
+
+  if( gToggleQuarterLine === false ){
+    return;
+  }
 
   stroke( 'black' );
   strokeWeight( 2.2 );
@@ -176,3 +189,22 @@ const getLineLevel = ( grayScaleValue ) => {
 
 }
 
+function keyPressed() {
+	
+  if( key === 's' || key === 'S' ) {
+
+    save();
+  
+  }else if( key === 'z' || key === 'Z' ) {
+    
+    gToggleGrid = !gToggleGrid;
+    drawLineSketch();
+  
+  }else if( key === 'x' || key === 'X' ) {
+  
+    gToggleQuarterLine = !gToggleQuarterLine;
+    drawLineSketch();
+  
+  }
+
+}
