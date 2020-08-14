@@ -7,7 +7,7 @@ Version 1.0.0
 This application **lineSketch** is an useful tool for the theme above.
 By drag&drop an image, we can get the converted image following the theme.
 
-We can play on [GitHub]() and [OpenProcessing](https://www.openprocessing.org/sketch/945023).
+We can play on [GitHub](https://github.com/tetunori/lineSketch) and [OpenProcessing](https://www.openprocessing.org/sketch/945023).
 
 # Usage
 1. Just drag&drop an image or select a image file from button.  
