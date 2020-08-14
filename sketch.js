@@ -76,8 +76,6 @@ const onImageDropped = ( file ) => {
 // Shrink big image
 const shrinkBigImage = () => {
 
-  console.log( gImg.width, gImg.height );
-
   const maxLength = Math.max( gImg.width, gImg.height );
   const threashold = 1570;
 
@@ -87,8 +85,6 @@ const shrinkBigImage = () => {
     gImg.resize( gImg.width / ratio, gImg.height / ratio );
 
   }
-
-  console.log( gImg.width, gImg.height );
 
 }
 
