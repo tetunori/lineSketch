@@ -1,79 +1,130 @@
 
-let gPict;
+// Image object
+let gImg;
 
+// Cell unit size(pixel)
 const CELL_SIZE = 10;
 
-const ROWS = 56;
-const COLUMNS = 72;
-
-
+// Line level ranges from 0 to 4.
+const LINE_LEVEL_MAX = 4;
 
 function preload() {
-  gPict = loadImage('images/testPict01.png');
-}  
-
+  gImg = loadImage( 'images/testPict01.png' );
+}
 
 function setup() {
-  createCanvas(gPict.width, gPict.height);
+  drawLineSketch();
+}
 
-  stroke( "#BAAFA7" );
-  for(let j = 0; j < height; j += CELL_SIZE){
-    for(let i = 0; i < width; i += CELL_SIZE){
-      rect(i, j, CELL_SIZE, CELL_SIZE);
-    }
-  }
+const drawLineSketch = () => {
 
+  // Create canvas with image size
+  createCanvas( gImg.width, gImg.height );
 
+  // Draw grid first
+  drawGrid();
 
-  // image(gPict, 0, 0);
-  gPict.filter(GRAY);
+  // Convert image data to gray scale
+  gImg.filter( GRAY );
 
-  noStroke();
-  noFill();
-  for(let j = 0; j < height; j += CELL_SIZE){
-    for(let i = 0; i < width; i += CELL_SIZE){
-      const color = gPict.get(i, j);
-      const grayScaleColor = color[0];
-      //  console.log(c);
-      
-      // fill(51 * getLineLevel(c[0]));
-      // fill(c);
-      stroke('#202020');
-      if( getLineLevel(grayScaleColor) === 1 ){
-        line(i, j,  i+CELL_SIZE, j);
-        line(i, j+CELL_SIZE,  i+CELL_SIZE, j+CELL_SIZE);
-      }else if( getLineLevel(grayScaleColor) === 2 ){
-        rect(i, j, CELL_SIZE, CELL_SIZE);   
-      }else if( getLineLevel(grayScaleColor) === 3 ){
-        rect(i, j, CELL_SIZE, CELL_SIZE);
-        line(i, j,  i+CELL_SIZE, j+CELL_SIZE);
-      }else if( getLineLevel(grayScaleColor) === 4 ){
-        rect(i, j, CELL_SIZE, CELL_SIZE);
-        line(i, j,  i+CELL_SIZE, j+CELL_SIZE);
-        line(i+CELL_SIZE, j,  i, j+CELL_SIZE);
-      }
-    }
- }
+  // Draw lines
+  drawLines();
 
-
-  stroke( 'black' );
-  strokeWeight(2.2);
-  line(0, height/4, width, height/4);
-  line(0, height/2, width, height/2);
-  line(0, 3 * height/4, width, 3 * height/4);
-
-  line(width/4, 0, width/4, height);
-  line(width/2, 0, width/2, height);
-  line(3 * width/4, 0, 3 * width/4, height);
+  // Draw Quater lines finally.
+  drawQuarterLine();
 
 }
 
+// Draw lines
+const drawLines = () => {
+
+  stroke('#202020');
+  strokeWeight( 1.0 );
+  noFill();
+
+  for( let column = 0; column < height; column += CELL_SIZE ){
+
+    for( let row = 0; row < width; row += CELL_SIZE ){
+
+      // Get pixel color. (Since it's gray-scaled color so all RGB values are same.)
+      const color = gImg.get( row, column );
+      const grayScaleColor = color[0];
+
+      switch( getLineLevel( grayScaleColor ) ){
+        default:
+        case 0:
+          // No operation.
+          break;
+        case 1:
+          // 2 lines top and bottom
+          line( row, column, row + CELL_SIZE, column );
+          line( row, column + CELL_SIZE, row + CELL_SIZE, column + CELL_SIZE );
+          break;
+        case 2:
+          // Square
+          rect( row, column, CELL_SIZE, CELL_SIZE );   
+          break;
+        case 3:
+          // Square with diagonal line
+          rect( row, column, CELL_SIZE, CELL_SIZE );
+          line( row, column, row + CELL_SIZE, column + CELL_SIZE );
+          break;
+        case 4:
+          // Square with 2 diagonal lines
+          rect( row, column, CELL_SIZE, CELL_SIZE );
+          line( row, column, row + CELL_SIZE, column + CELL_SIZE );
+          line( row + CELL_SIZE, column, row, column + CELL_SIZE );
+          break;
+      }
+      
+    }
+  }
+
+}
+
+// Draw base grid.
+const drawGrid = () => {
+
+  stroke( "#BAAFA7" );
+  strokeWeight( 1.0 );
+
+  for( let column = 0; column < height; column += CELL_SIZE ){
+
+    for( let row = 0; row < width; row += CELL_SIZE ){
+
+      rect( row, column, CELL_SIZE, CELL_SIZE );
+
+    }
+
+  }
+
+}
+
+// Draw thick vertical/horizontal lines dividing the canvas into 16 regions.
+const drawQuarterLine = () => {
+
+  stroke( 'black' );
+  strokeWeight( 2.2 );
+
+  for( let index of [ 1, 2, 3 ] ){
+
+    const qH = index * ( height / 4 );
+    line( 0, qH, width, qH );
+
+    const qW = index * ( width / 4 );
+    line( qW, 0, qW, height);
+
+  }
+
+}
+
+// Covert gray scale value(0-255) to line level(0-4)
 const getLineLevel = ( grayScaleValue ) => {
 
-  const LINE_LEVELS = 5;
-
-  // line level ranges from 0 to 4.
-  const lineLevel = 4 - Math.floor( (grayScaleValue / 256) * LINE_LEVELS );
+  const lineLevel = LINE_LEVEL_MAX 
+                      - Math.floor( 
+                          ( grayScaleValue / 256 ) * ( LINE_LEVEL_MAX + 1 ) 
+                        );
 
   // console.log(grayScaleValue, lineLevel);
   return lineLevel;
