@@ -56,7 +56,7 @@ const drawDropCanvas = () => {
   background( 200 );
   textAlign( CENTER );
   textSize( 26 );
-  text( 'Drop image. Up to 1440*1440 pixels.', width / 2, height / 2 );
+  text( 'Drop image HERE! \n\n The larger the pixel size of an image, \n the longer the analysis time', width / 2, height / 2 );
 
 }
 
