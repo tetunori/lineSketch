@@ -14,6 +14,7 @@ const LINE_LEVEL_MAX = 4;
 let gFileSelector;
 let gBtToggleGrid = undefined;
 let gBtToggleQuarterLine = undefined;
+let gBtSave = undefined;
 
 function setup() {
 
@@ -21,7 +22,7 @@ function setup() {
   // Prepare canvas
   const canvas = createCanvas( 800, 800 )
     .dragOver( ( evt ) => {
-      this.background( color( 'black' ) );
+      background( 'black' );
     } )
     .dragLeave( () => {
       if( gImg === undefined ){
@@ -45,6 +46,9 @@ function setup() {
 
   gBtToggleQuarterLine = createButton('Toggle Quarter lines');
   gBtToggleQuarterLine.mousePressed( toggleQuarterLine );
+
+  gBtSave = createButton('Save');
+  gBtSave.mousePressed( save );
 
   // Redraw controller
   redrawControllers();
@@ -87,8 +91,12 @@ const drawLineSketch = () => {
     return;
   }
 
+  background( 'white' );
+
   // Create canvas with image size
   resizeCanvas( gImg.width, gImg.height );
+  fill('white');
+  rect( 0, 0, width, height );
 
   // Draw grid first
   drawGrid();
@@ -112,7 +120,7 @@ const drawLines = () => {
 
   stroke('#202020');
   strokeWeight( 1.0 );
-  noFill();
+  fill('white');
 
   for( let column = 0; column < height; column += CELL_SIZE ){
 
@@ -245,15 +253,19 @@ const toggleQuarterLine = () => {
 const redrawControllers = () => {
 
   if( gBtToggleGrid ){
-    gBtToggleGrid.position( 10, height + 10 );
+    gBtToggleGrid.position( 10, 40 );
   }
 
   if( gBtToggleQuarterLine ){
-    gBtToggleQuarterLine.position( 110, height + 10 );
+    gBtToggleQuarterLine.position( 100, 40 );
+  }
+
+  if( gBtSave ){
+    gBtSave.position( 240, 40 );
   }
 
   if( gFileSelector ){
-    gFileSelector.position( 270, height + 10 );
+    gFileSelector.position( 10, 10 );
   }
 
 }
